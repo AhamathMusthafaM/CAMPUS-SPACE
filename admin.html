@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Panel — CampusCore RMS</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .admin-action { display:flex; align-items:center; gap:8px; }
+  .resource-row {
+    display:flex; align-items:center; gap:14px;
+    padding:13px 0; border-bottom:1px solid var(--border);
+  }
+  .resource-row:last-child { border-bottom:none; }
+  .res-icon { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .res-name { font-size:13.5px; font-weight:500; flex:1; }
+  .res-cap { font-size:12px; color:var(--text3); }
+  .admin-tabs { display:flex; gap:0; border-bottom:1px solid var(--border); margin-bottom:20px; }
+  .admin-tab {
+    padding:10px 18px; font-size:13px; cursor:pointer;
+    color:var(--text2); border-bottom:2px solid transparent;
+    transition:all 0.18s; font-weight:500; margin-bottom:-1px;
+  }
+  .admin-tab:hover { color:var(--text); }
+  .admin-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .pending-item {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:16px 18px;
+    margin-bottom:10px; transition:border-color 0.2s;
+  }
+  .pending-item.high-p { border-left:3px solid var(--danger); }
+  .pending-item.med-p { border-left:3px solid var(--warn); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🏛️</div>
+        <div>
+          <div class="logo-text">CampusCore</div>
+          <div class="logo-sub">Resource Management</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="index.html" class="nav-item"><span class="nav-icon">⚡</span> Dashboard</a>
+      <a href="booking.html" class="nav-item"><span class="nav-icon">📅</span> Resource Booking</a>
+      <a href="issues.html" class="nav-item"><span class="nav-icon">🔧</span> Issue Submission <span class="nav-badge red">4</span></a>
+      <div class="nav-section-label">Monitor</div>
+      <a href="tracking.html" class="nav-item"><span class="nav-icon">📊</span> Status Tracking</a>
+      <a href="admin.html" class="nav-item active"><span class="nav-icon">🛡️</span> Admin Panel</a>
+      <div class="nav-section-label">Account</div>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span> My Profile</a>
+      <a href="#" class="nav-item"><span class="nav-icon">🔔</span> Notifications <span class="nav-badge red">3</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">AD</div>
+        <div class="user-info">
+          <div class="u-name">Dr. S. Anandan</div>
+          <div class="u-role">Administrator</div>
+        </div>
+        <span class="u-menu">⋯</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title">Admin Panel</div>
+      <div class="topbar-right">
+        <span style="font-size:12px;background:rgba(56,189,248,0.1);color:var(--accent);border:1px solid rgba(56,189,248,0.2);padding:5px 12px;border-radius:20px;font-weight:600;">🛡️ Admin Mode</span>
+        <div class="search-box" style="width:200px;">
+          <span class="s-icon">🔍</span>
+          <input type="text" placeholder="Search…">
+        </div>
+        <a href="index.html" class="icon-btn">🏠</a>
+        <div class="icon-btn notif-pip">🔔</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- KPIs -->
+      <div class="stat-grid">
+        <div class="stat-card sc-blue">
+          <div class="sc-label">Total Users</div>
+          <div class="sc-value">1,842</div>
+          <div class="sc-sub"><span class="sc-up">↑ 43</span> this month</div>
+          <div class="sc-icon">👥</div>
+        </div>
+        <div class="stat-card sc-yellow">
+          <div class="sc-label">Pending Approvals</div>
+          <div class="sc-value">11</div>
+          <div class="sc-sub"><span style="color:var(--danger);font-weight:600;">3 urgent</span></div>
+          <div class="sc-icon">⏳</div>
+        </div>
+        <div class="stat-card sc-green">
+          <div class="sc-label">Resources Online</div>
+          <div class="sc-value">142/148</div>
+          <div class="sc-sub"><span style="color:var(--warn);font-weight:600;">6 under maintenance</span></div>
+          <div class="sc-icon">🏢</div>
+        </div>
+        <div class="stat-card sc-red">
+          <div class="sc-label">Critical Issues</div>
+          <div class="sc-value">4</div>
+          <div class="sc-sub">need immediate action</div>
+          <div class="sc-icon">🚨</div>
+        </div>
+      </div>
+
+      <div class="grid-32">
+
+        <!-- LEFT MAIN -->
+        <div>
+          <div class="card">
+            <div class="admin-tabs">
+              <div class="admin-tab active" onclick="adminTab('bookings',this)">📅 Booking Approvals <span style="background:rgba(245,158,11,0.2);color:var(--warn);padding:1px 7px;border-radius:20px;font-size:10px;margin-left:5px;">8</span></div>
+              <div class="admin-tab" onclick="adminTab('issues',this)">🔧 Issue Assignments <span style="background:rgba(248,113,113,0.2);color:var(--danger);padding:1px 7px;border-radius:20px;font-size:10px;margin-left:5px;">3</span></div>
+              <div class="admin-tab" onclick="adminTab('users',this)">👥 User Management</div>
+            </div>
+
+            <!-- BOOKING APPROVALS -->
+            <div id="atab-bookings">
+              <div class="pending-item med-p">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                  <div>
+                    <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px;">BK-2026-028</div>
+                    <div style="font-size:14px;font-weight:500;margin-bottom:5px;">Innovation Lab — IoT Workshop</div>
+                    <div style="font-size:12px;color:var(--text3);display:flex;gap:10px;flex-wrap:wrap;">
+                      <span>👤 Rahul Arumugam (21CSE0312)</span>
+                      <span>📅 07 Apr, 10AM–1PM</span>
+                      <span>👥 20 people</span>
+                    </div>
+                  </div>
+                  <div class="admin-action">
+                    <button class="btn btn-success btn-sm" onclick="approveItem(this)">✅ Approve</button>
+                    <button class="btn btn-danger btn-sm" onclick="rejectItem(this)">❌ Reject</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pending-item high-p">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                  <div>
+                    <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px;">BK-2026-030</div>
+                    <div style="font-size:14px;font-weight:500;margin-bottom:5px;">Auditorium — Annual Tech Symposium</div>
+                    <div style="font-size:12px;color:var(--text3);display:flex;gap:10px;flex-wrap:wrap;">
+                      <span>👤 Cultural Club Committee</span>
+                      <span>📅 15 Apr, 9AM–6PM</span>
+                      <span>👥 400 people</span>
+                    </div>
+                  </div>
+                  <div class="admin-action">
+                    <button class="btn btn-success btn-sm" onclick="approveItem(this)">✅ Approve</button>
+                    <button class="btn btn-danger btn-sm" onclick="rejectItem(this)">❌ Reject</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pending-item">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                  <div>
+                    <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px;">BK-2026-033</div>
+                    <div style="font-size:14px;font-weight:500;margin-bottom:5px;">Seminar Hall 2 — Alumni Talk</div>
+                    <div style="font-size:12px;color:var(--text3);display:flex;gap:10px;flex-wrap:wrap;">
+                      <span>👤 Placement Cell</span>
+                      <span>📅 10 Apr, 2PM–4PM</span>
+                      <span>👥 60 people</span>
+                    </div>
+                  </div>
+                  <div class="admin-action">
+                    <button class="btn btn-success btn-sm" onclick="approveItem(this)">✅ Approve</button>
+                    <button class="btn btn-danger btn-sm" onclick="rejectItem(this)">❌ Reject</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pending-item">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                  <div>
+                    <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px;">BK-2026-035</div>
+                    <div style="font-size:14px;font-weight:500;margin-bottom:5px;">Open Air Theatre — Cultural Night</div>
+                    <div style="font-size:12px;color:var(--text3);display:flex;gap:10px;flex-wrap:wrap;">
+                      <span>👤 Fine Arts Club</span>
+                      <span>📅 20 Apr, 6PM–9PM</span>
+                      <span>👥 150 people</span>
+                    </div>
+                  </div>
+                  <div class="admin-action">
+                    <button class="btn btn-success btn-sm" onclick="approveItem(this)">✅ Approve</button>
+                    <button class="btn btn-danger btn-sm" onclick="rejectItem(this)">❌ Reject</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ISSUE ASSIGNMENTS -->
+            <div id="atab-issues" style="display:none;">
+              <div class="pending-item high-p">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                  <div>
+                    <div style="font-size:12px;color:var(--danger);font-weight:700;margin-bottom:4px;">INC-0043 · HIGH</div>
+                    <div style="font-size:14px;font-weight:500;margin-bottom:5px;">Wi-Fi down in Lab B-204</div>
+                    <div style="font-size:12px;color:var(--text3);">Reported by Rahul A. · IT/Network · Block B</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+                    <select class="form-select" style="width:160px;font-size:12px;padding:6px 10px;">
+                      <option>Assign to…</option>
+                      <option>Karthik M. (IT)</option>
+                      <option>Suresh P. (IT)</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm">Assign</button>
+                  </div>
+                </div>
+              </div>
+              <div class="pending-item med-p">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                  <div>
+                    <div style="font-size:12px;color:var(--warn);font-weight:700;margin-bottom:4px;">INC-0042 · MEDIUM</div>
+                    <div style="font-size:14px;font-weight:500;margin-bottom:5px;">Projector fault — Seminar Hall 2</div>
+                    <div style="font-size:12px;color:var(--text3);">Reported by Dr. Kumar · AV Equipment · Admin Block</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+                    <select class="form-select" style="width:160px;font-size:12px;padding:6px 10px;">
+                      <option selected>Ramesh V. (AV)</option>
+                    </select>
+                    <span class="badge b-yellow">In Progress</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- USER MANAGEMENT -->
+            <div id="atab-users" style="display:none;">
+              <div style="display:flex;gap:10px;margin-bottom:16px;">
+                <div class="search-box" style="flex:1;">
+                  <span class="s-icon">🔍</span>
+                  <input type="text" placeholder="Search users by name, roll, email…">
+                </div>
+                <button class="btn btn-primary btn-sm">+ Add User</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>Name</th><th>Role</th><th>Dept</th><th>Status</th><th>Actions</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Rahul Arumugam</strong><br><span class="text-xs text-muted">21CSE0312</span></td>
+                      <td>Student</td><td>CSE</td>
+                      <td><span class="badge b-green">Active</span></td>
+                      <td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm">Edit</button><button class="btn btn-danger btn-sm">Block</button></div></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Dr. S. Kumar</strong><br><span class="text-xs text-muted">FAC-0087</span></td>
+                      <td>Faculty</td><td>CSE</td>
+                      <td><span class="badge b-green">Active</span></td>
+                      <td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm">Edit</button><button class="btn btn-danger btn-sm">Block</button></div></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Priya Subramaniam</strong><br><span class="text-xs text-muted">21ECE0145</span></td>
+                      <td>Student</td><td>ECE</td>
+                      <td><span class="badge b-green">Active</span></td>
+                      <td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm">Edit</button><button class="btn btn-danger btn-sm">Block</button></div></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Karthik M.</strong><br><span class="text-xs text-muted">STAFF-012</span></td>
+                      <td>IT Staff</td><td>Maintenance</td>
+                      <td><span class="badge b-green">Active</span></td>
+                      <td><div style="display:flex;gap:5px;"><button class="btn btn-secondary btn-sm">Edit</button><button class="btn btn-danger btn-sm">Block</button></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- RESOURCE MANAGER -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🏢 Resources</div>
+              <button class="btn btn-primary btn-sm">+ Add New</button>
+            </div>
+            <div class="resource-row">
+              <div class="res-icon" style="background:rgba(56,189,248,0.1);">🖥️</div>
+              <div style="flex:1;">
+                <div class="res-name">Lab A-301</div>
+                <div class="res-cap">Computer Lab · 40 seats</div>
+              </div>
+              <span class="badge b-green">Online</span>
+            </div>
+            <div class="resource-row">
+              <div class="res-icon" style="background:rgba(129,140,248,0.1);">🎓</div>
+              <div style="flex:1;">
+                <div class="res-name">Seminar Hall 1</div>
+                <div class="res-cap">Conference · 80 seats</div>
+              </div>
+              <span class="badge b-green">Online</span>
+            </div>
+            <div class="resource-row">
+              <div class="res-icon" style="background:rgba(245,158,11,0.1);">🏟️</div>
+              <div style="flex:1;">
+                <div class="res-name">Auditorium</div>
+                <div class="res-cap">Event Hall · 500 seats</div>
+              </div>
+              <span class="badge b-yellow">Partial</span>
+            </div>
+            <div class="resource-row">
+              <div class="res-icon" style="background:rgba(248,113,113,0.1);">🔬</div>
+              <div style="flex:1;">
+                <div class="res-name">Lab B-204</div>
+                <div class="res-cap">Computer Lab · 35 seats</div>
+              </div>
+              <span class="badge b-red">Maintenance</span>
+            </div>
+            <div class="resource-row">
+              <div class="res-icon" style="background:rgba(52,211,153,0.1);">📚</div>
+              <div style="flex:1;">
+                <div class="res-name">Library Pods (1–5)</div>
+                <div class="res-cap">Study Rooms · 6 seats each</div>
+              </div>
+              <span class="badge b-green">Online</span>
+            </div>
+            <div style="margin-top:14px;text-align:center;">
+              <button class="btn btn-secondary btn-sm w-full">View All 148 Resources</button>
+            </div>
+          </div>
+
+          <!-- ANALYTICS MINI -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px;">📊 Today's Overview</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg3);border-radius:10px;">
+                <span style="font-size:13px;">Total Bookings Today</span>
+                <span style="font-family:var(--font-head);font-weight:700;color:var(--accent);">34</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg3);border-radius:10px;">
+                <span style="font-size:13px;">New Issue Reports</span>
+                <span style="font-family:var(--font-head);font-weight:700;color:var(--danger);">4</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg3);border-radius:10px;">
+                <span style="font-size:13px;">Approvals Pending</span>
+                <span style="font-family:var(--font-head);font-weight:700;color:var(--warn);">11</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg3);border-radius:10px;">
+                <span style="font-size:13px;">Active Users Online</span>
+                <span style="font-family:var(--font-head);font-weight:700;color:var(--accent3);">87</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/nav.js"></script>
+<script>
+  function adminTab(tab, el) {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    ['bookings','issues','users'].forEach(t => {
+      document.getElementById('atab-' + t).style.display = t === tab ? 'block' : 'none';
+    });
+  }
+  function approveItem(btn) {
+    const item = btn.closest('.pending-item');
+    item.style.opacity = '0.5';
+    item.innerHTML = item.innerHTML.replace(/<div class="admin-action">[\s\S]*?<\/div>/, '<span class="badge b-green">✅ Approved</span>');
+  }
+  function rejectItem(btn) {
+    const item = btn.closest('.pending-item');
+    item.style.opacity = '0.5';
+    item.innerHTML = item.innerHTML.replace(/<div class="admin-action">[\s\S]*?<\/div>/, '<span class="badge b-red">❌ Rejected</span>');
+  }
+</script>
+</body>
+</html>

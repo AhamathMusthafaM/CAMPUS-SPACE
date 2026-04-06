@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Profile — CampusCore RMS</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .profile-stat {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px; text-align: center;
+  }
+  .profile-stat .ps-val { font-family:var(--font-head);font-size:26px;font-weight:800;line-height:1; margin-bottom:5px; }
+  .profile-stat .ps-lbl { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
+  .edit-btn {
+    background:none; border:1px solid var(--border); border-radius:8px;
+    color:var(--text2); padding:5px 12px; font-size:12px; cursor:pointer;
+    font-family:var(--font-body); transition:all 0.18s;
+  }
+  .edit-btn:hover { border-color:var(--border2); color:var(--text); }
+  .achievement {
+    display:flex; align-items:center; gap:12px;
+    padding:12px 14px; background:var(--bg3);
+    border:1px solid var(--border); border-radius:10px;
+    margin-bottom:8px; transition:border-color 0.2s;
+  }
+  .achievement:hover { border-color:var(--border2); }
+  .ach-icon { font-size:22px; }
+  .ach-name { font-size:13px; font-weight:500; }
+  .ach-desc { font-size:11.5px; color:var(--text3); }
+  .notif-pref {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:13px 0; border-bottom:1px solid var(--border);
+  }
+  .notif-pref:last-child { border-bottom:none; }
+  .toggle {
+    width:40px; height:22px; border-radius:11px;
+    background:var(--accent); position:relative; cursor:pointer;
+    transition:background 0.2s; flex-shrink:0;
+  }
+  .toggle.off { background:var(--bg3); border:1px solid var(--border); }
+  .toggle::after {
+    content:''; position:absolute; top:3px; right:3px;
+    width:16px; height:16px; border-radius:50%; background:#fff;
+    transition:right 0.2s; box-shadow:0 1px 4px rgba(0,0,0,0.3);
+  }
+  .toggle.off::after { right:auto; left:3px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🏛️</div>
+        <div>
+          <div class="logo-text">CampusCore</div>
+          <div class="logo-sub">Resource Management</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="index.html" class="nav-item"><span class="nav-icon">⚡</span> Dashboard</a>
+      <a href="booking.html" class="nav-item"><span class="nav-icon">📅</span> Resource Booking</a>
+      <a href="issues.html" class="nav-item"><span class="nav-icon">🔧</span> Issue Submission <span class="nav-badge red">4</span></a>
+      <div class="nav-section-label">Monitor</div>
+      <a href="tracking.html" class="nav-item"><span class="nav-icon">📊</span> Status Tracking</a>
+      <a href="admin.html" class="nav-item"><span class="nav-icon">🛡️</span> Admin Panel</a>
+      <div class="nav-section-label">Account</div>
+      <a href="profile.html" class="nav-item active"><span class="nav-icon">👤</span> My Profile</a>
+      <a href="#" class="nav-item"><span class="nav-icon">🔔</span> Notifications <span class="nav-badge red">3</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">RA</div>
+        <div class="user-info">
+          <div class="u-name">Rahul Arumugam</div>
+          <div class="u-role">Student · CSE III Year</div>
+        </div>
+        <span class="u-menu">⋯</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title">My Profile</div>
+      <div class="topbar-right">
+        <button class="btn btn-primary btn-sm" onclick="saveProfile()">💾 Save Changes</button>
+        <a href="index.html" class="icon-btn">🏠</a>
+        <div class="icon-btn notif-pip">🔔</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- PROFILE HERO -->
+      <div class="profile-hero">
+        <div class="profile-avatar">RA</div>
+        <div class="profile-info" style="flex:1;">
+          <div class="p-name">Rahul Arumugam</div>
+          <div class="p-role">Student · Computer Science & Engineering · III Year</div>
+          <div class="p-tags">
+            <span class="p-tag" style="background:rgba(56,189,248,0.12);color:var(--accent);">Roll: 21CSE0312</span>
+            <span class="p-tag" style="background:rgba(52,211,153,0.12);color:var(--accent3);">Active User</span>
+            <span class="p-tag" style="background:rgba(129,140,248,0.12);color:var(--accent2);">Verified</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <button class="edit-btn" style="margin-bottom:8px;display:block;margin-left:auto;">📷 Change Photo</button>
+          <div style="font-size:11px;color:var(--text3);">Member since Sep 2021</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:3px;">Last login: Today, 8:30 AM</div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="grid-4 mb-24">
+        <div class="profile-stat">
+          <div class="ps-val" style="color:var(--accent);">12</div>
+          <div class="ps-lbl">Total Bookings</div>
+        </div>
+        <div class="profile-stat">
+          <div class="ps-val" style="color:var(--accent3);">9</div>
+          <div class="ps-lbl">Completed</div>
+        </div>
+        <div class="profile-stat">
+          <div class="ps-val" style="color:var(--warn);">3</div>
+          <div class="ps-lbl">Issues Filed</div>
+        </div>
+        <div class="profile-stat">
+          <div class="ps-val" style="color:var(--accent2);">96%</div>
+          <div class="ps-lbl">Approval Rate</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+
+        <!-- LEFT -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- PERSONAL INFO -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">👤 Personal Information</div>
+              <button class="edit-btn" id="editBtn" onclick="toggleEdit()">✏️ Edit</button>
+            </div>
+            <div class="form-grid" id="infoForm">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input class="form-input" id="f-name" type="text" value="Rahul Arumugam" disabled style="opacity:0.7;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Roll Number</label>
+                <input class="form-input" type="text" value="21CSE0312" disabled style="opacity:0.7;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input class="form-input" id="f-email" type="email" value="rahul.a@campus.edu" disabled style="opacity:0.7;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input class="form-input" id="f-phone" type="tel" value="+91 98765 43210" disabled style="opacity:0.7;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <select class="form-select" id="f-dept" disabled style="opacity:0.7;">
+                  <option selected>Computer Science & Engineering</option>
+                  <option>Electrical Engineering</option>
+                  <option>Mechanical Engineering</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Year of Study</label>
+                <select class="form-select" id="f-year" disabled style="opacity:0.7;">
+                  <option>I Year</option>
+                  <option>II Year</option>
+                  <option selected>III Year</option>
+                  <option>IV Year</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Section</label>
+                <input class="form-input" id="f-section" type="text" value="Section B" disabled style="opacity:0.7;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Advisor / Faculty</label>
+                <input class="form-input" type="text" value="Dr. S. Kumar" disabled style="opacity:0.7;">
+              </div>
+            </div>
+          </div>
+
+          <!-- CHANGE PASSWORD -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:16px;">🔒 Change Password</div>
+            <div class="form-grid" style="grid-template-columns:1fr;">
+              <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input class="form-input" type="password" placeholder="Enter current password">
+              </div>
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input class="form-input" type="password" placeholder="Minimum 8 characters">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm New Password</label>
+                <input class="form-input" type="password" placeholder="Repeat new password">
+              </div>
+            </div>
+            <button class="btn btn-secondary" style="margin-top:16px;">Update Password</button>
+          </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- RECENT ACTIVITY -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🕐 My Recent Activity</div>
+              <a href="tracking.html" class="btn btn-secondary btn-sm">Full History</a>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="act-avatar av-blue">📅</div>
+                <div class="act-body">
+                  <div class="act-text">Booked <strong>Lab A-301</strong> for group study session</div>
+                  <div class="act-time">Today, 7:45 AM</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-avatar av-green">✅</div>
+                <div class="act-body">
+                  <div class="act-text"><strong>Seminar Hall 1</strong> booking completed successfully</div>
+                  <div class="act-time">4 Apr 2026</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-avatar av-red">🔧</div>
+                <div class="act-body">
+                  <div class="act-text">Reported <strong>Wi-Fi issue</strong> in Lab B-204</div>
+                  <div class="act-time">Today, 8:15 AM</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-avatar av-yellow">⏳</div>
+                <div class="act-body">
+                  <div class="act-text"><strong>Innovation Lab</strong> booking pending approval</div>
+                  <div class="act-time">5 Apr 2026</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="act-avatar av-purple">🎓</div>
+                <div class="act-body">
+                  <div class="act-text">Attended <strong>IoT Workshop</strong> in Innovation Lab</div>
+                  <div class="act-time">28 Mar 2026</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACHIEVEMENTS -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px;">🏆 Achievements</div>
+            <div class="achievement">
+              <div class="ach-icon">🥇</div>
+              <div>
+                <div class="ach-name">Power User</div>
+                <div class="ach-desc">Completed 10+ bookings this semester</div>
+              </div>
+              <span class="badge b-yellow" style="margin-left:auto;">Gold</span>
+            </div>
+            <div class="achievement">
+              <div class="ach-icon">⚡</div>
+              <div>
+                <div class="ach-name">Quick Reporter</div>
+                <div class="ach-desc">Reported 3 campus issues</div>
+              </div>
+              <span class="badge b-blue" style="margin-left:auto;">Silver</span>
+            </div>
+            <div class="achievement">
+              <div class="ach-icon">✅</div>
+              <div>
+                <div class="ach-name">Responsible Booker</div>
+                <div class="ach-desc">Zero cancellations this month</div>
+              </div>
+              <span class="badge b-green" style="margin-left:auto;">Active</span>
+            </div>
+          </div>
+
+          <!-- NOTIFICATION PREFERENCES -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:4px;">🔔 Notification Preferences</div>
+            <div class="notif-pref">
+              <div>
+                <div style="font-size:13px;font-weight:500;">Booking Confirmation</div>
+                <div style="font-size:11.5px;color:var(--text3);">Email & SMS on approval</div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('off')"></div>
+            </div>
+            <div class="notif-pref">
+              <div>
+                <div style="font-size:13px;font-weight:500;">Issue Status Updates</div>
+                <div style="font-size:11.5px;color:var(--text3);">Notified on each stage change</div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('off')"></div>
+            </div>
+            <div class="notif-pref">
+              <div>
+                <div style="font-size:13px;font-weight:500;">Booking Reminders</div>
+                <div style="font-size:11.5px;color:var(--text3);">1 hour before your booking</div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('off')"></div>
+            </div>
+            <div class="notif-pref">
+              <div>
+                <div style="font-size:13px;font-weight:500;">Admin Announcements</div>
+                <div style="font-size:11.5px;color:var(--text3);">Campus-wide notices</div>
+              </div>
+              <div class="toggle off" onclick="this.classList.toggle('off')"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SAVE / SIGNOUT -->
+      <div style="display:flex;gap:12px;margin-top:8px;">
+        <button class="btn btn-primary" onclick="saveProfile()">💾 Save All Changes</button>
+        <button class="btn btn-secondary">📤 Export My Data</button>
+        <button class="btn btn-danger" style="margin-left:auto;" onclick="if(confirm('Sign out?')) window.location='index.html'">🚪 Sign Out</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SAVE TOAST -->
+<div id="saveToast" style="display:none;position:fixed;bottom:28px;right:28px;background:var(--accent3);color:#fff;padding:12px 22px;border-radius:12px;font-weight:600;font-size:13px;box-shadow:var(--shadow);z-index:999;animation:fadeUp 0.3s ease;">✅ Profile saved successfully!</div>
+
+<script src="js/nav.js"></script>
+<script>
+  let editing = false;
+  function toggleEdit() {
+    editing = !editing;
+    const fields = ['f-name','f-email','f-phone','f-dept','f-year','f-section'];
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.disabled = !editing; el.style.opacity = editing ? '1' : '0.7'; }
+    });
+    document.getElementById('editBtn').textContent = editing ? '✅ Done' : '✏️ Edit';
+  }
+  function saveProfile() {
+    const t = document.getElementById('saveToast');
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 2500);
+  }
+</script>
+</body>
+</html>
