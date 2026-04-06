@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Resource Booking — CampusCore RMS</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .resource-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0; overflow: hidden;
+    cursor: pointer; transition: all 0.25s;
+  }
+  .resource-card:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: var(--glow); }
+  .resource-card.selected { border-color: var(--accent); box-shadow: var(--glow); }
+  .rc-thumb {
+    height: 110px; background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px; border-bottom: 1px solid var(--border);
+  }
+  .rc-body { padding: 16px; }
+  .rc-name { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .rc-meta { font-size: 11.5px; color: var(--text3); margin-bottom: 10px; }
+  .rc-footer { display: flex; align-items: center; justify-content: space-between; }
+  .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .ftab {
+    padding: 7px 16px; border-radius: 20px; font-size: 12.5px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border); background: var(--bg3);
+    color: var(--text2); transition: all 0.18s;
+  }
+  .ftab:hover { border-color: var(--border2); color: var(--text); }
+  .ftab.active { background: rgba(56,189,248,0.12); border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🏛️</div>
+        <div>
+          <div class="logo-text">CampusCore</div>
+          <div class="logo-sub">Resource Management</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="index.html" class="nav-item"><span class="nav-icon">⚡</span> Dashboard</a>
+      <a href="booking.html" class="nav-item active"><span class="nav-icon">📅</span> Resource Booking</a>
+      <a href="issues.html" class="nav-item"><span class="nav-icon">🔧</span> Issue Submission <span class="nav-badge red">4</span></a>
+      <div class="nav-section-label">Monitor</div>
+      <a href="tracking.html" class="nav-item"><span class="nav-icon">📊</span> Status Tracking</a>
+      <a href="admin.html" class="nav-item"><span class="nav-icon">🛡️</span> Admin Panel</a>
+      <div class="nav-section-label">Account</div>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span> My Profile</a>
+      <a href="#" class="nav-item"><span class="nav-icon">🔔</span> Notifications <span class="nav-badge red">3</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">RA</div>
+        <div class="user-info">
+          <div class="u-name">Rahul Arumugam</div>
+          <div class="u-role">Student · CSE III Year</div>
+        </div>
+        <span class="u-menu">⋯</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title">Resource Booking</div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <span class="s-icon">🔍</span>
+          <input type="text" placeholder="Search resources…" id="searchInput" oninput="filterResources(this.value)">
+        </div>
+        <a href="index.html" class="icon-btn" title="Home">🏠</a>
+        <a href="issues.html" class="icon-btn notif-pip" title="Issues">🔔</a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- STEPS INDICATOR -->
+      <div style="display:flex;align-items:center;gap:0;margin-bottom:28px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 28px;">
+        <div class="step active" style="display:flex;align-items:center;gap:10px;flex:1;">
+          <div style="width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">1</div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--accent);">Choose Resource</div>
+            <div style="font-size:11px;color:var(--text3);">Select facility</div>
+          </div>
+        </div>
+        <div style="flex:0;width:40px;border-top:1px dashed var(--border2);margin:0 10px;"></div>
+        <div style="display:flex;align-items:center;gap:10px;flex:1;" id="step2">
+          <div style="width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);color:var(--text3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;" id="step2num">2</div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text3);" id="step2label">Select Date & Time</div>
+            <div style="font-size:11px;color:var(--text3);">Pick a slot</div>
+          </div>
+        </div>
+        <div style="flex:0;width:40px;border-top:1px dashed var(--border2);margin:0 10px;"></div>
+        <div style="display:flex;align-items:center;gap:10px;flex:1;">
+          <div style="width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);color:var(--text3);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;" id="step3num">3</div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text3);" id="step3label">Confirm Booking</div>
+            <div style="font-size:11px;color:var(--text3);">Review & submit</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTER TABS -->
+      <div class="filter-tabs">
+        <div class="ftab active" onclick="setFilter('all',this)">All Resources</div>
+        <div class="ftab" onclick="setFilter('lab',this)">🖥️ Computer Labs</div>
+        <div class="ftab" onclick="setFilter('hall',this)">🏛️ Seminar Halls</div>
+        <div class="ftab" onclick="setFilter('sports',this)">⚽ Sports</div>
+        <div class="ftab" onclick="setFilter('library',this)">📚 Library</div>
+        <div class="ftab" onclick="setFilter('outdoor',this)">🌿 Outdoor</div>
+      </div>
+
+      <!-- RESOURCES GRID -->
+      <div class="grid-3 mb-24" id="resourceGrid">
+        <div class="resource-card" data-type="lab" onclick="selectResource(this,'Lab A-301','Computer Lab','40 seats')">
+          <div class="rc-thumb">🖥️</div>
+          <div class="rc-body">
+            <div class="rc-name">Lab A-301</div>
+            <div class="rc-meta">Computer Lab · Block A, 3rd Floor · 40 seats</div>
+            <div class="rc-footer">
+              <span class="badge b-green">Available</span>
+              <span style="font-size:11px;color:var(--text3);">AC · Wi-Fi · Projector</span>
+            </div>
+          </div>
+        </div>
+        <div class="resource-card" data-type="lab" onclick="selectResource(this,'Lab B-204','Computer Lab','35 seats')">
+          <div class="rc-thumb">💻</div>
+          <div class="rc-body">
+            <div class="rc-name">Lab B-204</div>
+            <div class="rc-meta">Computer Lab · Block B, 2nd Floor · 35 seats</div>
+            <div class="rc-footer">
+              <span class="badge b-red">Occupied</span>
+              <span style="font-size:11px;color:var(--text3);">AC · Wi-Fi</span>
+            </div>
+          </div>
+        </div>
+        <div class="resource-card" data-type="hall" onclick="selectResource(this,'Seminar Hall 1','Conference Hall','80 seats')">
+          <div class="rc-thumb">🎓</div>
+          <div class="rc-body">
+            <div class="rc-name">Seminar Hall 1</div>
+            <div class="rc-meta">Conference Hall · Admin Block · 80 seats</div>
+            <div class="rc-footer">
+              <span class="badge b-green">Available</span>
+              <span style="font-size:11px;color:var(--text3);">AC · Projector · Mic</span>
+            </div>
+          </div>
+        </div>
+        <div class="resource-card" data-type="hall" onclick="selectResource(this,'Auditorium','Event Hall','500 seats')">
+          <div class="rc-thumb">🏟️</div>
+          <div class="rc-body">
+            <div class="rc-name">Auditorium</div>
+            <div class="rc-meta">Event Hall · Main Block · 500 seats</div>
+            <div class="rc-footer">
+              <span class="badge b-yellow">Partial</span>
+              <span style="font-size:11px;color:var(--text3);">Stage · Sound · AC</span>
+            </div>
+          </div>
+        </div>
+        <div class="resource-card" data-type="sports" onclick="selectResource(this,'Basketball Court','Sports','Outdoor')">
+          <div class="rc-thumb">🏀</div>
+          <div class="rc-body">
+            <div class="rc-name">Basketball Court</div>
+            <div class="rc-meta">Sports · Ground Floor · Outdoor</div>
+            <div class="rc-footer">
+              <span class="badge b-green">Available</span>
+              <span style="font-size:11px;color:var(--text3);">Floodlights</span>
+            </div>
+          </div>
+        </div>
+        <div class="resource-card" data-type="library" onclick="selectResource(this,'Library Pod 3','Study Room','6 seats')">
+          <div class="rc-thumb">📚</div>
+          <div class="rc-body">
+            <div class="rc-name">Library Pod 3</div>
+            <div class="rc-meta">Study Room · Library, 1st Floor · 6 seats</div>
+            <div class="rc-footer">
+              <span class="badge b-green">Available</span>
+              <span style="font-size:11px;color:var(--text3);">Wi-Fi · Whiteboard</span>
+            </div>
+          </div>
+        </div>
+        <div class="resource-card" data-type="outdoor" onclick="selectResource(this,'Open Air Amphitheatre','Outdoor Venue','200 seats')">
+          <div class="rc-thumb">🌿</div>
+          <div class="rc-body">
+            <div class="rc-name">Open Air Theatre</div>
+            <div class="rc-meta">Outdoor Venue · Central Campus · 200 seats</div>
+            <div class="rc-footer">
+              <span class="badge b-green">Available</span>
+              <span style="font-size:11px;color:var(--text3);">Stage · PA System</span>
+            </div>
+          </div>
+        </div>
+        <div class="resource-card" data-type="lab" onclick="selectResource(this,'Innovation Lab','Research Lab','20 seats')">
+          <div class="rc-thumb">🔬</div>
+          <div class="rc-body">
+            <div class="rc-name">Innovation Lab</div>
+            <div class="rc-meta">Research Lab · Tech Block · 20 seats</div>
+            <div class="rc-footer">
+              <span class="badge b-blue">New</span>
+              <span style="font-size:11px;color:var(--text3);">3D Printer · IoT Kit</span>
+            </div>
+          </div>
+        </div>
+        <div class="resource-card" data-type="sports" onclick="selectResource(this,'Indoor Badminton Court','Sports Indoor','4 courts')">
+          <div class="rc-thumb">🏸</div>
+          <div class="rc-body">
+            <div class="rc-name">Badminton Courts</div>
+            <div class="rc-meta">Sports Indoor · Sports Block · 4 courts</div>
+            <div class="rc-footer">
+              <span class="badge b-yellow">1 left</span>
+              <span style="font-size:11px;color:var(--text3);">Equipment rental</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOKING FORM -->
+      <div class="card" id="bookingForm" style="display:none;">
+        <div class="card-header">
+          <div class="card-title">📝 Complete Your Booking — <span id="selectedResourceName" style="color:var(--accent);font-family:var(--font-body);font-weight:500;"></span></div>
+        </div>
+
+        <!-- TIME SLOTS -->
+        <div class="mb-20">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Select Date</div>
+            </div>
+          </div>
+          <input type="date" class="form-input" style="width:220px;margin-bottom:16px;" id="bookDate" value="2026-04-06">
+
+          <div class="section-title mb-12">Available Time Slots</div>
+          <div class="slot-grid">
+            <div class="slot available" onclick="selectSlot(this)"><div class="slot-time">08:00 AM</div><div class="slot-status text-green">Free</div></div>
+            <div class="slot booked"><div class="slot-time">09:00 AM</div><div class="slot-status text-danger">Booked</div></div>
+            <div class="slot available" onclick="selectSlot(this)"><div class="slot-time">10:00 AM</div><div class="slot-status text-green">Free</div></div>
+            <div class="slot available" onclick="selectSlot(this)"><div class="slot-time">11:00 AM</div><div class="slot-status text-green">Free</div></div>
+            <div class="slot booked"><div class="slot-time">12:00 PM</div><div class="slot-status text-danger">Booked</div></div>
+            <div class="slot available" onclick="selectSlot(this)"><div class="slot-time">02:00 PM</div><div class="slot-status text-green">Free</div></div>
+            <div class="slot available" onclick="selectSlot(this)"><div class="slot-time">03:00 PM</div><div class="slot-status text-green">Free</div></div>
+            <div class="slot booked"><div class="slot-time">04:00 PM</div><div class="slot-status text-danger">Booked</div></div>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- DETAILS FORM -->
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" type="text" value="Rahul Arumugam" placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Roll Number</label>
+            <input class="form-input" type="text" value="21CSE0312" placeholder="Roll number">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select class="form-select">
+              <option>Computer Science & Engineering</option>
+              <option>Electrical Engineering</option>
+              <option>Mechanical Engineering</option>
+              <option>Civil Engineering</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Duration</label>
+            <select class="form-select">
+              <option>1 hour</option>
+              <option>2 hours</option>
+              <option>3 hours</option>
+              <option>Half Day (4 hrs)</option>
+              <option>Full Day</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Number of Attendees</label>
+            <input class="form-input" type="number" value="15" min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Event / Purpose Type</label>
+            <select class="form-select">
+              <option>Class / Lab Session</option>
+              <option>Project Meeting</option>
+              <option>Club Activity</option>
+              <option>Cultural Event</option>
+              <option>Seminar / Workshop</option>
+              <option>Exam</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Purpose / Description</label>
+            <textarea class="form-textarea" placeholder="Briefly describe the purpose of this booking…">Data Structures project group discussion and practice session for upcoming lab exam.</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Faculty Approval (if required)</label>
+            <input class="form-input" type="text" placeholder="Faculty name or ID">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Email</label>
+            <input class="form-input" type="email" value="rahul.a@campus.edu">
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;margin-top:24px;">
+          <button class="btn btn-primary" onclick="submitBooking()">📅 Confirm Booking</button>
+          <button class="btn btn-secondary" onclick="cancelBooking()">Cancel</button>
+          <span style="font-size:12px;color:var(--text3);margin-left:4px;">Bookings require admin approval within 2 hours</span>
+        </div>
+      </div>
+
+      <!-- SUCCESS MESSAGE (hidden) -->
+      <div id="successMsg" style="display:none;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.25);border-radius:var(--radius);padding:32px;text-align:center;">
+        <div style="font-size:48px;margin-bottom:12px;">✅</div>
+        <div style="font-family:var(--font-head);font-size:20px;font-weight:800;margin-bottom:8px;">Booking Submitted!</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:20px;">Your booking request has been submitted and is pending admin approval.<br>You'll receive a notification once it's confirmed.</div>
+        <div style="display:flex;gap:10px;justify-content:center;">
+          <a href="tracking.html" class="btn btn-success">Track Status</a>
+          <button class="btn btn-secondary" onclick="resetBooking()">Book Another</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/nav.js"></script>
+<script>
+  let selectedResource = null;
+  let selectedSlot = null;
+
+  function setFilter(type, el) {
+    document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.resource-card').forEach(card => {
+      card.style.display = (type === 'all' || card.dataset.type === type) ? 'block' : 'none';
+    });
+  }
+
+  function selectResource(el, name, type, cap) {
+    document.querySelectorAll('.resource-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedResource = name;
+    document.getElementById('selectedResourceName').textContent = name;
+    document.getElementById('bookingForm').style.display = 'block';
+    document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function selectSlot(el) {
+    document.querySelectorAll('.slot.available').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedSlot = el.querySelector('.slot-time').textContent;
+  }
+
+  function submitBooking() {
+    document.getElementById('bookingForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function cancelBooking() {
+    document.getElementById('bookingForm').style.display = 'none';
+    document.querySelectorAll('.resource-card').forEach(c => c.classList.remove('selected'));
+  }
+
+  function resetBooking() {
+    document.getElementById('successMsg').style.display = 'none';
+    document.querySelectorAll('.resource-card').forEach(c => c.classList.remove('selected'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function filterResources(val) {
+    val = val.toLowerCase();
+    document.querySelectorAll('.resource-card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = text.includes(val) ? 'block' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

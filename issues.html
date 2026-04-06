@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Issue Submission — CampusCore RMS</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .issue-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+    margin-bottom: 10px; transition: border-color 0.2s;
+    display: flex; align-items: flex-start; gap: 14px;
+    cursor: pointer;
+  }
+  .issue-card:hover { border-color: var(--border2); }
+  .issue-num { font-size: 11px; color: var(--text3); font-weight: 600; margin-bottom: 5px; }
+  .issue-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+  .issue-meta { font-size: 12px; color: var(--text3); display: flex; gap: 12px; flex-wrap: wrap; }
+  .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .priority-dot.high { background: var(--danger); box-shadow: 0 0 8px rgba(248,113,113,0.5); }
+  .priority-dot.medium { background: var(--warn); }
+  .priority-dot.low { background: var(--accent3); }
+  .cat-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🏛️</div>
+        <div>
+          <div class="logo-text">CampusCore</div>
+          <div class="logo-sub">Resource Management</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="index.html" class="nav-item"><span class="nav-icon">⚡</span> Dashboard</a>
+      <a href="booking.html" class="nav-item"><span class="nav-icon">📅</span> Resource Booking</a>
+      <a href="issues.html" class="nav-item active"><span class="nav-icon">🔧</span> Issue Submission <span class="nav-badge red">4</span></a>
+      <div class="nav-section-label">Monitor</div>
+      <a href="tracking.html" class="nav-item"><span class="nav-icon">📊</span> Status Tracking</a>
+      <a href="admin.html" class="nav-item"><span class="nav-icon">🛡️</span> Admin Panel</a>
+      <div class="nav-section-label">Account</div>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span> My Profile</a>
+      <a href="#" class="nav-item"><span class="nav-icon">🔔</span> Notifications <span class="nav-badge red">3</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">RA</div>
+        <div class="user-info">
+          <div class="u-name">Rahul Arumugam</div>
+          <div class="u-role">Student · CSE III Year</div>
+        </div>
+        <span class="u-menu">⋯</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title">Issue Submission</div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <span class="s-icon">🔍</span>
+          <input type="text" placeholder="Search issues…">
+        </div>
+        <a href="index.html" class="icon-btn">🏠</a>
+        <div class="icon-btn notif-pip">🔔</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="grid-32">
+
+        <!-- LEFT: FORM -->
+        <div>
+          <div class="card mb-20">
+            <div class="card-header">
+              <div class="card-title">🔧 Report a New Issue</div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label class="form-label">Issue Title</label>
+                <input class="form-input" type="text" placeholder="Brief description of the problem…" id="issueTitle">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-select" id="issueCat">
+                  <option value="">Select category…</option>
+                  <option>🖥️ IT / Computers</option>
+                  <option>💡 Electrical / Power</option>
+                  <option>🚿 Plumbing / Water</option>
+                  <option>❄️ AC / Ventilation</option>
+                  <option>🏗️ Civil / Structure</option>
+                  <option>🔒 Security / Access</option>
+                  <option>🧹 Housekeeping</option>
+                  <option>📡 Network / Internet</option>
+                  <option>📽️ AV Equipment</option>
+                  <option>🌿 Outdoor / Grounds</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Priority</label>
+                <select class="form-select" id="issuePriority">
+                  <option>🟢 Low — Non-urgent</option>
+                  <option selected>🟡 Medium — Affects work</option>
+                  <option>🔴 High — Urgent / Blocking</option>
+                  <option>🚨 Critical — Safety risk</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Location / Block</label>
+                <select class="form-select">
+                  <option>Block A — Academic</option>
+                  <option>Block B — Labs</option>
+                  <option>Block C — Admin</option>
+                  <option>Sports Block</option>
+                  <option>Library</option>
+                  <option>Hostel Block</option>
+                  <option>Cafeteria</option>
+                  <option>Outdoor Area</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Room / Area</label>
+                <input class="form-input" type="text" placeholder="e.g. A-301, Ground Floor Lobby">
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Detailed Description</label>
+                <textarea class="form-textarea" style="min-height:110px;" placeholder="Provide as much detail as possible — when the issue started, how it affects usage, etc." id="issueDesc"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Reported By</label>
+                <input class="form-input" type="text" value="Rahul Arumugam">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Contact</label>
+                <input class="form-input" type="text" value="rahul.a@campus.edu">
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Attach Photo / Screenshot (optional)</label>
+                <div style="border:1px dashed var(--border2);border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:var(--bg3);transition:background 0.2s;" onmouseover="this.style.background='var(--card2)'" onmouseout="this.style.background='var(--bg3)'">
+                  <div style="font-size:24px;margin-bottom:6px;">📎</div>
+                  <div style="font-size:12px;color:var(--text3);">Drag & drop or click to upload</div>
+                  <div style="font-size:11px;color:var(--text3);margin-top:3px;">PNG, JPG, PDF up to 5MB</div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:20px;display:flex;gap:10px;">
+              <button class="btn btn-primary" onclick="submitIssue()">🔧 Submit Issue</button>
+              <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+          </div>
+
+          <!-- SUCCESS -->
+          <div id="issueSent" style="display:none;background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:20px;">
+            <div style="font-size:36px;margin-bottom:8px;">✅</div>
+            <div style="font-family:var(--font-head);font-size:17px;font-weight:800;margin-bottom:6px;">Issue Submitted — #INC-0047</div>
+            <div style="font-size:13px;color:var(--text2);">Your issue has been logged and assigned to the maintenance team. Expected resolution in <strong>24–48 hours</strong>.</div>
+            <div style="margin-top:14px;display:flex;gap:8px;justify-content:center;">
+              <a href="tracking.html" class="btn btn-success btn-sm">Track Issue</a>
+              <button class="btn btn-secondary btn-sm" onclick="document.getElementById('issueSent').style.display='none'">Report Another</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: RECENT ISSUES -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📋 Recent Issues</div>
+              <a href="tracking.html" class="btn btn-secondary btn-sm">All Issues</a>
+            </div>
+
+            <!-- STATS ROW -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;">
+              <div style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.15);border-radius:10px;padding:12px;text-align:center;">
+                <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--danger);">4</div>
+                <div style="font-size:10px;color:var(--text3);margin-top:2px;">Open</div>
+              </div>
+              <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);border-radius:10px;padding:12px;text-align:center;">
+                <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--warn);">7</div>
+                <div style="font-size:10px;color:var(--text3);margin-top:2px;">In Progress</div>
+              </div>
+              <div style="background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);border-radius:10px;padding:12px;text-align:center;">
+                <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--accent3);">31</div>
+                <div style="font-size:10px;color:var(--text3);margin-top:2px;">Resolved</div>
+              </div>
+            </div>
+
+            <div class="issue-card">
+              <div class="priority-dot high"></div>
+              <div class="cat-icon" style="background:rgba(248,113,113,0.1);">📡</div>
+              <div style="flex:1;">
+                <div class="issue-num">#INC-0043</div>
+                <div class="issue-title">Wi-Fi down in Lab B-204</div>
+                <div class="issue-meta">
+                  <span>🖥️ IT / Network</span>
+                  <span>📍 Block B</span>
+                  <span>2 hrs ago</span>
+                </div>
+              </div>
+              <span class="badge b-red">Open</span>
+            </div>
+
+            <div class="issue-card">
+              <div class="priority-dot high"></div>
+              <div class="cat-icon" style="background:rgba(245,158,11,0.1);">💡</div>
+              <div style="flex:1;">
+                <div class="issue-num">#INC-0042</div>
+                <div class="issue-title">Projector not working — Seminar Hall 2</div>
+                <div class="issue-meta">
+                  <span>📽️ AV Equipment</span>
+                  <span>📍 Admin Block</span>
+                  <span>5 hrs ago</span>
+                </div>
+              </div>
+              <span class="badge b-yellow">In Progress</span>
+            </div>
+
+            <div class="issue-card">
+              <div class="priority-dot medium"></div>
+              <div class="cat-icon" style="background:rgba(56,189,248,0.1);">❄️</div>
+              <div style="flex:1;">
+                <div class="issue-num">#INC-0041</div>
+                <div class="issue-title">AC not cooling in Library Reading Room</div>
+                <div class="issue-meta">
+                  <span>❄️ AC / Ventilation</span>
+                  <span>📍 Library</span>
+                  <span>Yesterday</span>
+                </div>
+              </div>
+              <span class="badge b-yellow">In Progress</span>
+            </div>
+
+            <div class="issue-card">
+              <div class="priority-dot low"></div>
+              <div class="cat-icon" style="background:rgba(52,211,153,0.1);">🧹</div>
+              <div style="flex:1;">
+                <div class="issue-num">#INC-0040</div>
+                <div class="issue-title">Broken chair in Classroom A-102</div>
+                <div class="issue-meta">
+                  <span>🏗️ Civil</span>
+                  <span>📍 Block A</span>
+                  <span>2 days ago</span>
+                </div>
+              </div>
+              <span class="badge b-green">Resolved</span>
+            </div>
+
+            <div class="issue-card">
+              <div class="priority-dot low"></div>
+              <div class="cat-icon" style="background:rgba(129,140,248,0.1);">🚿</div>
+              <div style="flex:1;">
+                <div class="issue-num">#INC-0039</div>
+                <div class="issue-title">Leaking tap — Boys washroom, Block A</div>
+                <div class="issue-meta">
+                  <span>🚿 Plumbing</span>
+                  <span>📍 Block A</span>
+                  <span>3 days ago</span>
+                </div>
+              </div>
+              <span class="badge b-green">Resolved</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/nav.js"></script>
+<script>
+  function submitIssue() {
+    const t = document.getElementById('issueTitle').value;
+    const d = document.getElementById('issueDesc').value;
+    if (!t.trim()) { document.getElementById('issueTitle').focus(); return; }
+    document.getElementById('issueSent').style.display = 'block';
+    document.getElementById('issueSent').scrollIntoView({ behavior: 'smooth' });
+  }
+  function clearForm() {
+    document.getElementById('issueTitle').value = '';
+    document.getElementById('issueDesc').value = '';
+  }
+</script>
+</body>
+</html>
